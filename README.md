@@ -1,4 +1,4 @@
-# SZ Finances
+# Szfinances
 
 Backend pet project для учёта и аналитики инвестиционного портфеля на данных Московской биржи.
 
