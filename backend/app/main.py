@@ -52,3 +52,8 @@ for r in admin_routers:
     api_router.include_router(r, prefix='/admin')
 
 app.include_router(api_router)
+
+
+@app.get('/health/live', tags=['Healthcheck'])
+async def liveness_probe():
+    return {'status': 'ok'}
