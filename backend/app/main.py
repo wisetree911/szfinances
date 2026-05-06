@@ -1,6 +1,7 @@
 from contextlib import asynccontextmanager
 
 from app.api.routers.adm import routers as admin_routers
+from app.api.routers.health import router as health_router
 from app.api.routers.public import routers as public_routers
 from app.core.logging import configure_logging_dev
 from app.core.middleware import request_logging_middleware
@@ -47,13 +48,9 @@ api_router.include_router(router=ws_router)
 for r in public_routers:
     api_router.include_router(r)
 
-
 for r in admin_routers:
     api_router.include_router(r, prefix='/admin')
 
+api_router.include_router(health_router)
+
 app.include_router(api_router)
-
-
-@app.get('/health/live', tags=['Healthcheck'])
-async def liveness_probe():
-    return {'status': 'ok'}
