@@ -16,30 +16,32 @@ router = APIRouter(
 
 
 @router.post('/accounts/fetch', status_code=status.HTTP_202_ACCEPTED)
-def enqueue_accounts_fetch(user_token: str) -> TBankTaskResponse:
+def enqueue_accounts_fetch(
+    user_token: str = Query(..., description='TOKEN клиента Т банка'),
+) -> TBankTaskResponse:
     task = fetch_accounts.delay(user_token)
     return TBankTaskResponse(task_id=task.id, status=task.status)
 
 
 @router.post('/portfolio/fetch', status_code=status.HTTP_202_ACCEPTED)
 def enqueue_portfolio_fetch(
-    account_id: str = Query(None, description='T-Bank broker account id'),
-    token: str = Query(None, description='T-Bank token'),
+    account_id: str = Query(..., description='ID аккаунта от Т банка '),
+    user_token: str = Query(..., description='TOKEN клиента Т банка'),
 ) -> TBankTaskResponse:
-    task = fetch_portfolio.delay(account_id=account_id, token=token)
+    task = fetch_portfolio.delay(account_id=account_id, token=user_token)
     return TBankTaskResponse(task_id=task.id, status=task.status)
 
 
 @router.post('/operations/fetch', status_code=status.HTTP_202_ACCEPTED)
 def enqueue_operations_fetch(
-    account_id: str,
-    token: str,
+    account_id: str = Query(..., description='ID аккаунта от Т банка '),
+    user_token: str = Query(..., description='TOKEN клиента Т банка'),
     from_dt: datetime | None = Query(None, alias='from'),
     to_dt: datetime | None = Query(None, alias='to'),
 ) -> TBankTaskResponse:
     task = fetch_operations.delay(
         account_id=account_id,
-        token=token,
+        token=user_token,
         from_iso=from_dt.isoformat() if from_dt else None,
         to_iso=to_dt.isoformat() if to_dt else None,
     )
