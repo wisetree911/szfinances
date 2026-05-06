@@ -23,8 +23,8 @@ def enqueue_accounts_fetch(user_token: str) -> TBankTaskResponse:
 
 @router.post('/portfolio/fetch', status_code=status.HTTP_202_ACCEPTED)
 def enqueue_portfolio_fetch(
-    account_id: str | None = Query(None, description='T-Bank broker account id'),
-    token: str | None = Query(None, description='T-Bank token'),
+    account_id: str = Query(None, description='T-Bank broker account id'),
+    token: str = Query(None, description='T-Bank token'),
 ) -> TBankTaskResponse:
     task = fetch_portfolio.delay(account_id=account_id, token=token)
     return TBankTaskResponse(task_id=task.id, status=task.status)
@@ -32,12 +32,14 @@ def enqueue_portfolio_fetch(
 
 @router.post('/operations/fetch', status_code=status.HTTP_202_ACCEPTED)
 def enqueue_operations_fetch(
-    account_id: str | None = Query(None, description='T-Bank broker account id'),
+    account_id: str,
+    token: str,
     from_dt: datetime | None = Query(None, alias='from'),
     to_dt: datetime | None = Query(None, alias='to'),
 ) -> TBankTaskResponse:
     task = fetch_operations.delay(
         account_id=account_id,
+        token=token,
         from_iso=from_dt.isoformat() if from_dt else None,
         to_iso=to_dt.isoformat() if to_dt else None,
     )

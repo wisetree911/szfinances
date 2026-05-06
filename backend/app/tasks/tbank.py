@@ -29,11 +29,12 @@ def fetch_portfolio(account_id: str, token: str) -> dict:
 
 @celery_app.task(name='tbank.fetch_operations')
 def fetch_operations(
-    account_id: str | None = None,
+    account_id: str,
+    token: str,
     from_iso: str | None = None,
     to_iso: str | None = None,
 ) -> dict:
-    return TBankInvestClient().get_operations(
+    return TBankInvestClient(token=token).get_operations(
         account_id=account_id,
         from_=parse_datetime(from_iso),
         to=parse_datetime(to_iso),

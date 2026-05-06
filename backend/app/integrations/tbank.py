@@ -99,7 +99,7 @@ class TBankInvestClient:
     def get_operations(
         self,
         *,
-        account_id: str | None = None,
+        account_id: str,
         from_: datetime | None = None,
         to: datetime | None = None,
         page_limit: int = 100,
