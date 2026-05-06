@@ -11,6 +11,10 @@ skip-magic-trailing-comma = false
 [tool.ruff.lint]
 select = ["E", "F", "I", "B", "UP"]
 
+[[tool.uv.index]]
+url = "https://opensource.tbank.ru/api/v4/projects/238/packages/pypi/simple"
+default = true
+
 [tool.ruff.lint.per-file-ignores]
 "backend/app/api/**/*.py" = ["B008"]
 
@@ -43,10 +47,12 @@ dependencies = [
     "pydantic-settings>=2.12.0",
     "python-jose[cryptography]>=3.5.0",
     "python-multipart>=0.0.22",
-    "redis>=7.1.0",
+    "redis>=5.0.3,<6.5",
     "sqlalchemy>=2.0.46",
     "structlog>=25.5.0",
     "uvicorn>=0.40.0",
+    "t-tech-investments>=0.3.5",
+    "celery[redis]>=5.4.0",
 ]
 
 [dependency-groups]
