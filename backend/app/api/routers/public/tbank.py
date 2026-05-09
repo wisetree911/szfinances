@@ -1,13 +1,10 @@
 from datetime import datetime
-from typing import Any
 
 from app.core.security.dependencies import get_current_user
 from app.infrastructure.db.database import get_session
 from app.repositories.tbank_connection import TBankIntegrationRepositoryPostgres
-from app.schemas.tbank import TBankTaskResponse, TBankTaskStatusResponse
-from app.tasks.celery_app import celery_app
+from app.schemas.tbank import TBankTaskResponse
 from app.tasks.tbank import fetch_accounts, fetch_operations, fetch_portfolio
-from celery.result import AsyncResult
 from fastapi import APIRouter, Depends, Query, status
 
 router = APIRouter(
@@ -52,22 +49,3 @@ def enqueue_operations_fetch(
         to_iso=to_dt.isoformat() if to_dt else None,
     )
     return TBankTaskResponse(task_id=task.id, status=task.status)
-
-
-@router.get('/tasks/{task_id}')
-def get_tbank_task_status(task_id: str) -> TBankTaskStatusResponse:
-    task = AsyncResult(task_id, app=celery_app)
-    result: Any | None = None
-    error: str | None = None
-
-    if task.successful():
-        result = task.result
-    elif task.failed():
-        error = str(task.result)
-
-    return TBankTaskStatusResponse(
-        task_id=task.id,
-        status=task.status,
-        result=result,
-        error=error,
-    )
