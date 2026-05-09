@@ -23,10 +23,9 @@ class TBankIntegrationRepositoryPostgres:
         result = await self.session.execute(query)
         return result.scalars().all()
 
-    async def get_by_id_for_user(self, connection_id: int, user_id: int):
+    async def get_by_id(self, connection_id: int):
         query = select(TBankConnection).where(
             TBankConnection.id == connection_id,
-            TBankConnection.user_id == user_id,
         )
         result = await self.session.execute(query)
         return result.scalar_one_or_none()

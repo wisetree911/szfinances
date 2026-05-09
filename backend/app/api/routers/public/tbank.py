@@ -21,8 +21,9 @@ async def enqueue_accounts_fetch(
     session=Depends(get_session),
 ) -> TBankTaskResponse:
     t = TBankIntegrationRepositoryPostgres(session=session)
-    await t.create(user_id=current_user.id, name=name, encrypted_token=user_token)
-    task = fetch_accounts.delay(user_token)
+    res = await t.create(user_id=current_user.id, name=name, encrypted_token=user_token)
+    task = fetch_accounts.delay(res.id)
+
     return TBankTaskResponse(task_id=task.id, status=task.status)
 
 
